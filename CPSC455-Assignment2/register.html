@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Register Forms</title>
+</head>
+<body bgcolor="#E6E6FA">
+	<h1>Register</h1>
+
+	<form name="myFormReg">
+		<div>
+			<!-- User input for First name & Last name -->
+			<!-- FIRST NAME -->
+			<label for = "username">Username </label>
+			<input name="username" id="username" type = "text" placeholder="JohnS" required>
+			<br>
+			<label for = "fName">First Name: </label>
+			<input name="first" id="fname" type = "text" placeholder="John" required>
+			<br>
+			<!-- LAST NAME -->
+			<label for = "lName">Last Name: </label>
+			<input name = "last" id="lname" type = "text" placeholder="Smith" required>
+			<br>
+			<!-- Email -->
+			<label for = "email">Email: </label>
+			<input name="email" id="email" type="email" placeholder="your email" required>
+			<br>
+			<label for = "password">Password: </label>
+			<input name="password" id="password" type="password" placeholder="your password" pattern=".{5,}" required title="Password must be at least 5">
+			<br>
+
+			<input type='submit' value='Register'>
+		</div>
+			<h2><a href="/">Click here</a> to login</h2>
+	</form>
+	<script type="text/javascript" src="./srcregister.js"></script>
+</body>
+</html>

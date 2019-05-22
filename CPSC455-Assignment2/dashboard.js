@@ -525,42 +525,44 @@ app.get('/withdraw', function(req,res) {
 
 app.post('/withdraw_success', function(req,res) {
 
-  // do back end processing here
+	// gets username
+  let username =req.session.username;
 
-  let tempobj=retObj(req.session.username); //sets temp obj to the user logged in
-  let acc=req.body.username.account.toString(); //sets the users name to acc
-  // can make an if statement here to add more accounts
-  let valueinacc=parseInt(tempobj.account.bankacc[acc],10);//gets the value of acc
-  let withdrawal=parseInt(req.body.username.withdraw,10);//gets value to withdraw
-  if(valueinacc>=withdrawal)
-  {
-  let newval=valueinacc-withdrawal; //new value in account
-  console.log(newval);
-  tempobj.account.bankacc[acc]=newval;
-  console.log(tempobj);
+  //sets username to session username
+  let withdraw_amount = parseInt(req.body.username.withdraw,10);
+  //sets the deposit amount
+  if (withdraw_amount >= 0){
+  mysqlConn.query('USE users; SELECT bankacc from banktable where `username` = ?', [username],
+  function(err, qResult) {
 
-  //Writes to the database the new line.
-  fs.readFile('mydb.txt', 'utf8', function (err,data)
-  {
+    let curr_bal= parseFloat((qResult[1][0].bankacc));
 
-    var formatted = data.replace(JSON.stringify(retObj(req.session.username)),JSON.stringify(tempobj));
-    fs.writeFile('mydb.txt', formatted, 'utf8', function (err)
-    {
-      if (err) return console.log(err);
+    // checks if there is enough money
+    if (curr_bal > withdraw_amount) {
+      let new_bal=(curr_bal) - deposit_amount;
+      mysqlConn.query('USE users; UPDATE banktable SET `bankacc`= ? WHERE `username` = ?',
+      [new_bal,req.session.username],
+      function (err, results) {
+      if (err) throw err;
+      console.log(results);
+
     });
+  }
+
+    else {
+      // not enough money
+      console.log('not enough money');
+    }
+
+    if (err) throw err;
+
   });
-
-
-    console.log("withdraw_success")
-  }
-  else{
-    console.log("Withdrawl_fail");
-  }
-
-    res.end()
-
-    // do back end processing here
-})
+}
+else{
+  console.log("Invalid amount");
+}
+  res.end();
+});
 
 app.get('/transfer', function(req,res) {
 
